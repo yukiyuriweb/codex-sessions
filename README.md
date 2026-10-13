@@ -22,7 +22,7 @@ Codex Sessions is read-only: it opens Codex's local state database (`~/.codex/st
 
 This produces `build/CodexSessions.app`. `./build.sh --install` also copies it to `~/Applications`.
 
-The app icon is drawn by `make-icon.swift` at build time.
+The app icon is drawn by `scripts/make-icon.swift` at build time. UI strings are English in code; other languages live in `Localization/*.lproj`.
 
 ## License
 

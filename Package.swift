@@ -7,6 +7,7 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "CodexSessions",
+            path: "Sources/CodexSessions",
             linkerSettings: [.linkedLibrary("sqlite3")]
         )
     ]

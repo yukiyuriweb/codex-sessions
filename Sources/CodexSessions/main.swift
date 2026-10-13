@@ -15,15 +15,15 @@ struct Group: Identifiable {
     let sessions: [Session]
 }
 
-/// ~/.codex/state_*.sqlite から、アーカイブされていない通常セッションを読む（読み取り専用）
+/// Reads the unarchived, user-started sessions from ~/.codex/state_*.sqlite, read-only
 func loadSessions() throws -> [Session] {
     let codexDir = FileManager.default.homeDirectoryForCurrentUser.appending(path: ".codex")
     let files = try FileManager.default.contentsOfDirectory(atPath: codexDir.path)
-    // スキーマ更新で state_5 → state_6 … と変わる可能性があるので最大番号を使う
+    // A schema update may bump state_5 to state_6 and so on, so take the highest number
     guard let dbName = files
         .filter({ $0.hasPrefix("state_") && $0.hasSuffix(".sqlite") })
         .max(by: { $0.localizedStandardCompare($1) == .orderedAscending })
-    else { throw NSError(domain: "CodexSessions", code: 1, userInfo: [NSLocalizedDescriptionKey: "state_*.sqlite が見つかりません"]) }
+    else { throw NSError(domain: "CodexSessions", code: 1, userInfo: [NSLocalizedDescriptionKey: String(localized: "No state_*.sqlite found in ~/.codex")]) }
 
     var db: OpaquePointer?
     guard sqlite3_open_v2(codexDir.appending(path: dbName).path, &db, SQLITE_OPEN_READONLY, nil) == SQLITE_OK else {
@@ -66,7 +66,7 @@ final class Store: ObservableObject {
     func reload() {
         do {
             let sessions = try loadSessions()
-            // sessions は新しい順なので、初出順に並べればグループも最終更新の新しい順になる
+            // Sessions come newest first, so grouping in order of first appearance puts the most recently used directory first
             var order: [String] = []
             var byCwd: [String: [Session]] = [:]
             for s in sessions {
@@ -113,15 +113,15 @@ struct SessionRow: View {
                 copy(command)
                 copiedID = session.id
             } label: {
-                Label(copiedID == session.id ? "コピー済み" : "コピー",
+                Label(copiedID == session.id ? "Copied" : "Copy",
                       systemImage: copiedID == session.id ? "checkmark" : "doc.on.doc")
             }
             .help(command)
         }
         .contextMenu {
-            Button("codex resume コマンドをコピー") { copy(command) }
-            Button("cd 付きでコピー") { copy("cd \(shellQuote(session.cwd)) && \(command)") }
-            Button("ID をコピー") { copy(session.id) }
+            Button("Copy codex resume Command") { copy(command) }
+            Button("Copy with cd") { copy("cd \(shellQuote(session.cwd)) && \(command)") }
+            Button("Copy ID") { copy(session.id) }
         }
     }
 }
@@ -151,7 +151,7 @@ struct ContentView: View {
         .listStyle(.sidebar)
         .frame(minWidth: 420, minHeight: 300)
         .toolbar {
-            Button { store.reload() } label: { Label("再読み込み", systemImage: "arrow.clockwise") }
+            Button { store.reload() } label: { Label("Reload", systemImage: "arrow.clockwise") }
                 .keyboardShortcut("r")
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in

@@ -1,0 +1,10 @@
+/* Session list */
+"Copy" = "コピー";
+"Copied" = "コピー済み";
+"Copy codex resume Command" = "codex resume コマンドをコピー";
+"Copy with cd" = "cd 付きでコピー";
+"Copy ID" = "ID をコピー";
+"Reload" = "再読み込み";
+
+/* Errors */
+"No state_*.sqlite found in ~/.codex" = "~/.codex に state_*.sqlite が見つかりません";
