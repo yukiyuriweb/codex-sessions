@@ -25,7 +25,7 @@ cat > "$APP/Contents/Info.plist" <<'EOF'
 <dict>
     <key>CFBundleExecutable</key><string>CodexSessions</string>
     <key>CFBundleIconFile</key><string>AppIcon</string>
-    <key>CFBundleIdentifier</key><string>local.yuki.codex-sessions</string>
+    <key>CFBundleIdentifier</key><string>local.codex-sessions</string>
     <key>CFBundleName</key><string>Codex Sessions</string>
     <key>CFBundlePackageType</key><string>APPL</string>
     <key>CFBundleShortVersionString</key><string>1.0</string>
